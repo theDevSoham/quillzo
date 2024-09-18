@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import RecoilContextProvider from "@/lib/RecoilContextProvider";
+import SessionWrapper from "@/lib/SessionWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,10 +17,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} antialiased`}>
-        <RecoilContextProvider>{children}</RecoilContextProvider>
-      </body>
-    </html>
+    <SessionWrapper>
+      <html lang="en">
+        <body className={`${inter.className} antialiased`}>
+          <RecoilContextProvider>{children}</RecoilContextProvider>
+        </body>
+      </html>
+    </SessionWrapper>
   );
 }
