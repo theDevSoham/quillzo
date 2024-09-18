@@ -1,13 +1,15 @@
 import { NextAuthOptions } from "next-auth";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import NextAuth from "next-auth/next";
 
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
+
 import { prisma } from "@/utils/prisma";
 import bcrypt from "bcryptjs";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
-export const authoptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GithubProvider({
@@ -22,7 +24,11 @@ export const authoptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "example@domain.com",
+        },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -58,7 +64,7 @@ export const authoptions: NextAuthOptions = {
 
   callbacks: {
     async signIn({ user, account }) {
-      // Handle logic for Google/GitHub sign-in (as before)
+      // Handle logic for Google/GitHub sign-in
       if (account?.provider === "google" || account?.provider === "github") {
         const email = user.email || "";
         let name = user.name || "";
@@ -77,23 +83,21 @@ export const authoptions: NextAuthOptions = {
           update: { name, surname },
           create: { email, name, surname, password: null },
         });
-        return true;
       }
 
-      if (account?.provider === "credentials") {
-        if (!user) {
-          // Error occurred during credentials login
-		  console.log("Error while credentials")
-          return false;
-        }
-        return true;
-      }
-
-      return false;
+      return true;
     },
-    async session({ session, user }) {
-      session.user = user;
+    async session({ session, token }) {
+      if (token?.id && session?.user) {
+        session.user.id = token.id;
+      }
       return session;
+    },
+    async jwt({ token, user }) {
+      if (user?.id) {
+        token.id = user.id;
+      }
+      return token;
     },
   },
 };
