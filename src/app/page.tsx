@@ -1,12 +1,10 @@
 import React from "react";
-import TextInput from "./components/TextInput";
-import TestComp from "./components/TestComp";
+import Navbar from "../components/custom/NavBar";
 
 const App = () => {
   return (
     <div>
-      <TextInput />
-      <TestComp />
+      <Navbar />
     </div>
   );
 };
