@@ -7,6 +7,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 import { prisma } from "@/utils/prisma";
 import bcrypt from "bcryptjs";
+import { generateRandomPassword } from "@/utils/generateRandomPassword";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -80,7 +81,12 @@ export const authOptions: NextAuthOptions = {
         await prisma.users.upsert({
           where: { email },
           update: { name, surname },
-          create: { email, name, surname, password: null },
+          create: {
+            email,
+            name,
+            surname,
+            password: generateRandomPassword(true),
+          },
         });
 
         return true;

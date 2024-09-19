@@ -1,5 +1,8 @@
 const responseSender = (
-  responseObject: Record<string, any>,
+  responseObject: {
+    message: string;
+    [key: string]: any;
+  },
   status: number,
   headers?: Record<string, string>
 ): Response => {

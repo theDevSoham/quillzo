@@ -12,9 +12,13 @@ model posts {
 }
 
 model users {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  name     String
-  surname  String
-  email    String @unique
-  password String?
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  surname   String
+  email     String    @unique
+  password  String?
+  otp       String?
+  otpExpiry DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
