@@ -1,4 +1,9 @@
-import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ThemeSwitch } from "../theme-switch";
@@ -15,6 +20,7 @@ export default function NavBar() {
             <MenuIcon className="h-6 w-6" />
           </Button>
         </SheetTrigger>
+        <SheetTitle className="flex md:hidden font-bold">Quillzo</SheetTitle>
         <SheetContent side="right">
           <Link href="#" className="mr-6 hidden lg:flex" prefetch={false}>
             <MountainIcon className="h-[50px] w-[50px]" />
