@@ -1,6 +1,5 @@
 import { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import NextAuth from "next-auth/next";
 
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
@@ -83,9 +82,19 @@ export const authOptions: NextAuthOptions = {
           update: { name, surname },
           create: { email, name, surname, password: null },
         });
+
+        return true;
       }
 
-      return true;
+      if (account?.provider === "credentials") {
+        if (!user) {
+          // no user found with email
+          return false;
+        }
+        return true;
+      }
+
+      return false;
     },
     async session({ session, token }) {
       if (token?.id && session?.user) {
