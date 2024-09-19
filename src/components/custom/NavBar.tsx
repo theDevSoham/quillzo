@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ThemeSwitch } from "../theme-switch";
 import Image from "next/image";
-import logo from "@/public/images/logo.webp";
 import { playpenSans } from "@/fonts/fonts";
 import { useEffect, useState } from "react";
 
@@ -21,7 +20,7 @@ export default function NavBar() {
   const [scrolled, setScrolled] = useState<boolean>(false);
 
   const scrollEffect = () => {
-    if (window.scrollY >= 30) {
+    if (window.scrollY >= 20) {
       setScrolled(true);
     } else {
       setScrolled(false);
@@ -153,5 +152,9 @@ function MenuIcon<T>(props: T) {
 }
 
 function MountainIcon<T>(props: T) {
-  return <Image src={logo} alt="logo" {...props} />;
+  return (
+    <div {...props}>
+      <Image src="/images/logo.webp" alt="logo" width={500} height={500} />
+    </div>
+  );
 }
