@@ -1,7 +1,6 @@
 export default function ChromeIcon<T>(props: T) {
   return (
     <svg
-      {...props}
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
@@ -11,6 +10,8 @@ export default function ChromeIcon<T>(props: T) {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      className="lucide lucide-chrome"
+      {...props}
     >
       <circle cx="12" cy="12" r="10" />
       <circle cx="12" cy="12" r="4" />

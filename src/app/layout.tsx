@@ -4,6 +4,7 @@ import RecoilContextProvider from "@/lib/RecoilContextProvider";
 import SessionWrapper from "@/lib/SessionWrapper";
 import { ThemeProvider } from "@/components/theme-provider";
 import { playpenSans } from "../fonts/fonts";
+import NavBar from "@/components/custom/NavBar";
 
 export const metadata: Metadata = {
   title: "Quillzo",
@@ -28,7 +29,10 @@ export default function RootLayout({
           themes={["light", "dark"]}
         >
           <SessionWrapper>
-            <RecoilContextProvider>{children}</RecoilContextProvider>
+            <RecoilContextProvider>
+              <NavBar />
+              {children}
+            </RecoilContextProvider>
           </SessionWrapper>
         </ThemeProvider>
       </body>

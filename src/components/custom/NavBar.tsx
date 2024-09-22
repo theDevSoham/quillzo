@@ -11,9 +11,9 @@ import { ThemeSwitch } from "../theme-switch";
 import Image from "next/image";
 import { playpenSans } from "@/fonts/fonts";
 import { useEffect, useState } from "react";
-import Login from "./auth/Login";
-import Signup from "./auth/Signup";
 import Hamburger from "@/assets/Hamburger";
+import Logo from "@/assets/Logo";
+import { useRouter } from "next/navigation";
 
 const scrolledClasses =
   "p-1 bg-background/50 sticky top-0 backdrop-blur border-b z-10";
@@ -45,6 +45,7 @@ const navItems: NavItems[] = [
 
 export default function NavBar() {
   const [scrolled, setScrolled] = useState<boolean>(false);
+  const router = useRouter();
 
   const scrollEffect = () => {
     if (window.scrollY >= 20) {
@@ -76,8 +77,15 @@ export default function NavBar() {
           </Link>
         ))}
 
-        <Login />
-        <Signup />
+        <Button variant="default" onClick={() => router.push("/auth/login")}>
+          Login
+        </Button>
+        <Button
+          variant="secondary"
+          onClick={() => router.push("/auth/register")}
+        >
+          Signup
+        </Button>
       </>
     );
   };
@@ -94,7 +102,7 @@ export default function NavBar() {
           <SheetTitle className="flex md:hidden font-bold">Quillzo</SheetTitle>
           <SheetContent side="right">
             <Link href="#" className="mr-6 hidden lg:flex" prefetch={false}>
-              <MountainIcon className="h-[50px] w-[50px]" />
+              <Logo className="h-[50px] w-[50px]" />
               <span className="sr-only">Quillzo</span>
             </Link>
             <div className="grid gap-2 py-6">
@@ -107,7 +115,7 @@ export default function NavBar() {
         </Sheet>
         <Link href="/" className="mr-6 flex" prefetch={false}>
           <div className="flex justify-center items-center gap-5">
-            <MountainIcon className="lg:h-[50px] md:h-[40px] lg:w-[50px] md:w-[40px] h-[55px] w-[55px]" />
+            <Logo className="lg:h-[50px] md:h-[40px] lg:w-[50px] md:w-[40px] h-[55px] w-[55px]" />
             <span
               className={`hidden md:flex ${playpenSans.className} font-bold lg:text-2xl md:text-xl`}
             >
@@ -124,13 +132,5 @@ export default function NavBar() {
         </nav>
       </div>
     </header>
-  );
-}
-
-function MountainIcon<T>(props: T) {
-  return (
-    <div {...props}>
-      <Image src="/images/logo.webp" alt="logo" width={500} height={500} />
-    </div>
   );
 }

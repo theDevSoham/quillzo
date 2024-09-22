@@ -11,15 +11,28 @@ import { generateRandomPassword } from "@/utils/generateRandomPassword";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
+  // pages: {
+  //   signIn: "/auth/login",
+  //   signOut: "/auth/logout",
+  // },
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID as string,
       clientSecret: process.env.GITHUB_SECRET as string,
+      allowDangerousEmailAccountLinking: true,
     }),
 
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      allowDangerousEmailAccountLinking: true,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -36,7 +49,7 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const user = await prisma.users.findUnique({
+        const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
 
@@ -78,7 +91,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         // Upsert user in Prisma
-        await prisma.users.upsert({
+        await prisma.user.upsert({
           where: { email },
           update: { name, surname },
           create: {
@@ -106,6 +119,7 @@ export const authOptions: NextAuthOptions = {
       if (token?.id && session?.user) {
         session.user.id = token.id;
       }
+
       return session;
     },
     async jwt({ token, user }) {

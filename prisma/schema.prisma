@@ -7,11 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model posts {
+model Post {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 }
 
-model users {
+model User {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   surname   String
@@ -21,4 +21,36 @@ model users {
   otpExpiry DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  accounts  Account[]
+  sessions  Session[]
+}
+
+model Session {
+  id           String   @id @default(cuid()) @map("_id")
+  userId       String   @db.ObjectId
+  expires      DateTime
+  sessionToken String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model Account {
+  id                String   @id @default(cuid()) @map("_id")
+  userId            String   @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  access_token      String
+  refresh_token     String?
+  id_token          String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
 }
