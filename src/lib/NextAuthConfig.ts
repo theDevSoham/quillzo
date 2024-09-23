@@ -8,8 +8,10 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/utils/prisma";
 import bcrypt from "bcryptjs";
 import { generateRandomPassword } from "@/utils/generateRandomPassword";
+import { authConfigGeneral } from "./authConfigGeneral";
 
 export const authOptions: NextAuthOptions = {
+  ...authConfigGeneral,
   adapter: PrismaAdapter(prisma),
   // pages: {
   //   signIn: "/auth/login",
