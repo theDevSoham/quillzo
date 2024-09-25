@@ -81,6 +81,16 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account }) {
       // Handle logic for Google/GitHub sign-in
       if (account?.provider === "google" || account?.provider === "github") {
+        const foundUser = await prisma.user.findUnique({
+          where: {
+            email: user.email as string,
+          },
+        });
+
+        if (foundUser) {
+          return true;
+        }
+
         const email = user.email || "";
         let name = user.name || "";
         let surname = "";
@@ -91,6 +101,8 @@ export const authOptions: NextAuthOptions = {
         } else if (account.provider === "github" && user.name) {
           [name, surname] = user.name.split(" ", 2);
         }
+
+        console.log("User details: ", user, name, surname, email);
 
         // Upsert user in Prisma
         await prisma.user.upsert({
