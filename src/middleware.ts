@@ -36,8 +36,8 @@ export const middleware = async (request: NextRequest) => {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  // If the user is not authenticated, redirect to login
-  if (!session) {
+  // If the user is not authenticated, and login is not fetched, redirect to login
+  if (!session && pathname !== "/auth/login") {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 

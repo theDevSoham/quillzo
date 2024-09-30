@@ -8,12 +8,12 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ThemeSwitch } from "../theme-switch";
-import Image from "next/image";
 import { playpenSans } from "@/fonts/fonts";
 import { useEffect, useState } from "react";
 import Hamburger from "@/assets/Hamburger";
 import Logo from "@/assets/Logo";
 import { useRouter } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
 
 const scrolledClasses =
   "p-1 bg-background/50 sticky top-0 backdrop-blur border-b z-10";
@@ -46,6 +46,7 @@ const navItems: NavItems[] = [
 export default function NavBar() {
   const [scrolled, setScrolled] = useState<boolean>(false);
   const router = useRouter();
+  const session = useSession();
 
   const scrollEffect = () => {
     if (window.scrollY >= 20) {
@@ -77,15 +78,33 @@ export default function NavBar() {
           </Link>
         ))}
 
-        <Button variant="default" onClick={() => router.push("/auth/login")}>
-          Login
-        </Button>
-        <Button
-          variant="secondary"
-          onClick={() => router.push("/auth/register")}
-        >
-          Signup
-        </Button>
+        {session.status === "authenticated" ? (
+          <>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                signOut();
+              }}
+            >
+              Signout
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button
+              variant="default"
+              onClick={() => router.push("/auth/login")}
+            >
+              Login
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => router.push("/auth/register")}
+            >
+              Signup
+            </Button>
+          </>
+        )}
       </>
     );
   };

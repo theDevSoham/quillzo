@@ -85,38 +85,55 @@ export const authOptions: NextAuthOptions = {
           where: {
             email: user.email as string,
           },
-        });
 
-        if (foundUser) {
-          return true;
-        }
-
-        const email = user.email || "";
-        let name = user.name || "";
-        let surname = "";
-
-        // Split name and surname if available
-        if (account.provider === "google" && name) {
-          [name, surname] = name.split(" ", 2);
-        } else if (account.provider === "github" && user.name) {
-          [name, surname] = user.name.split(" ", 2);
-        }
-
-        console.log("User details: ", user, name, surname, email);
-
-        // Upsert user in Prisma
-        await prisma.user.upsert({
-          where: { email },
-          update: { name, surname },
-          create: {
-            email,
-            name,
-            surname,
-            password: generateRandomPassword(true),
+          include: {
+            accounts: {
+              where: {
+                provider: account.provider,
+                providerAccountId: account.providerAccountId,
+              },
+            },
           },
         });
 
-        return true;
+        if (foundUser) {
+          // Check if the user has any accounts that match the specified provider
+          if (foundUser.accounts.length > 0) {
+            // User found and has accounts with the specified provider
+            return true;
+          } else {
+            // User found but no accounts match the specified provider
+            return false;
+          }
+        } else {
+          // User not found
+          const email = user.email || "";
+          let name = user.name || "";
+          let surname = "";
+
+          // Split name and surname if available
+          if (account.provider === "google" && name) {
+            [name, surname] = name.split(" ", 2);
+          } else if (account.provider === "github" && user.name) {
+            [name, surname] = user.name.split(" ", 2);
+          }
+
+          console.log("User details: ", user, name, surname, email);
+
+          // Upsert user in Prisma
+          await prisma.user.upsert({
+            where: { email },
+            update: { name, surname },
+            create: {
+              email,
+              name,
+              surname,
+              password: generateRandomPassword(true),
+            },
+          });
+
+          return true;
+        }
       }
 
       if (account?.provider === "credentials") {
